@@ -1,7 +1,15 @@
 const express = require("express");
 const server = express();
 const cors = require("cors");
-server.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+server.use(
+    cors({
+        credentials: true,
+        origin: [
+            "http://localhost:3000",
+            "https://dashboard.heroku.com/apps/waynestb-capstone-frontend",
+        ],
+    })
+);
 const bodyParser = require("body-parser");
 server.use(bodyParser.json());
 const bcrypt = require("bcrypt");
@@ -18,6 +26,10 @@ server.use(
         cookie: { maxAge: oneMonth },
     })
 );
+let port = process.env.PORT;
+if (!port) {
+    port = 3001;
+}
 
 //look at blog backend to add server.post login & any other endpoints
 
@@ -67,8 +79,8 @@ const autheRequired = (req, res, next) => {
     }
 };
 
-server.listen(3001, () => {
-    console.log("Server Running");
+server.listen(port, () => {
+    console.log("Server running.");
 });
 
 const createFirstUser = async () => {
