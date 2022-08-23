@@ -58,6 +58,21 @@ server.post("/login", async (req, res) => {
     }
 });
 
+server.post("/createAccount", async (req, res) => {
+    const newUser = await User.findOne({
+        where: { username: req.body.username },
+    });
+    if (newUser) {
+        res.send({ error: "username taken. try again" });
+    } else {
+        User.create({
+            username: req.body.username,
+            password: bcrypt.hashSync(req.body.password, 10),
+        });
+        res.send({ success: true });
+    }
+});
+
 server.get("/loginStatus", (req, res) => {
     if (req.session.user) {
         res.send({ isLoggedIn: true });
